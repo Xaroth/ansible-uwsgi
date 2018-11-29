@@ -1,0 +1,8 @@
+[uwsgi]
+pidfile = {{ uwsgi_pid_dir }}/emperor.pid
+emperor = {{ uwsgi_apps_enabled }}
+uid = {{ www_user }}
+gid = {{ www_group }}
+
+{# we use install -d on the pid dir to ensure that it exists, even if systemd somehow messes it up #}
+exec-as-root = install -d {{ uwsgi_pid_dir }} -g {{ www_group }} -m775

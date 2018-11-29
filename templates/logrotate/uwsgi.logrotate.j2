@@ -1,0 +1,9 @@
+"{{ uwsgi_log_directory }}/*.log" "{{ uwsgi_log_directory }}/*/*.log" {
+  copytruncate
+  daily
+  rotate {{ uwsgi_logrotate_days }}
+  compress
+  delaycompress
+  missingok
+  notifempty
+}

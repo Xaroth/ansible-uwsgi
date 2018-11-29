@@ -1,0 +1,27 @@
+# The user/group under which we'll be running
+www_user: www-data
+www_group: www-data
+
+uwsgi_conf_dir: /etc/uwsgi
+uwsgi_apps_enabled: "{{ uwsgi_conf_dir }}/apps-enabled"
+uwsgi_apps_available: "{{ uwsgi_conf_dir }}/apps-available"
+uwsgi_log_directory: /var/log/uwsgi
+
+uwsgi_logrotate_days: 5
+
+uwsgi_runtime_dir: uwsgi
+uwsgi_pid_dir: "/run/{{ uwsgi_runtime_dir }}"
+
+uwsgi_apt_requirements:
+  - build-essential
+  - libonig-dev
+  - libqdbm-dev
+  - libbz2-dev
+  - libxml2-dev
+  - libkrb5-dev
+  - libpcre3-dev
+  - libdb-dev
+  - python3-dev
+  - libcap-dev
+  - liblua5.3-dev
+  - libattr1-dev

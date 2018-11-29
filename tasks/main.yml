@@ -1,0 +1,71 @@
+- name: install all pre-requirements
+  apt:
+    name: "{{ uwsgi_apt_requirements }}"
+    state: present
+  tags:
+    - uwsgi
+
+- name: install uwsgi
+  pip:
+    name: "uwsgi"
+    state: latest
+  notify:
+    - restart uwsgi
+  tags:
+    - uwsgi
+
+- name: create configuration directories
+  file:
+    name: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+  with_items:
+    - "{{ uwsgi_conf_dir }}"
+    - "{{ uwsgi_apps_enabled }}"
+    - "{{ uwsgi_apps_available }}"
+  tags:
+    - uwsgi
+
+- name: create log directory
+  file:
+    name: "{{ uwsgi_log_directory }}"
+    state: directory
+    owner: "{{ www_user }}"
+    group: "{{ www_group }}"
+  tags:
+    - uwsgi
+
+- name: configure uwsgi in systemd
+  template:
+    src: systemd/uwsgi.service.j2
+    dest: /etc/systemd/system/uwsgi.service
+  notify:
+    - reload systemd
+    - restart uwsgi
+  tags:
+    - uwsgi
+
+- name: configure uwsgi emperor
+  template:
+    src: uwsgi/emperor.ini.j2
+    dest: "{{ uwsgi_conf_dir }}/emperor.ini"
+  notify:
+    - restart uwsgi
+  tags:
+    - uwsgi
+
+- name: configure logrotate
+  template:
+    src: logrotate/uwsgi.logrotate.j2
+    dest: /etc/logrotate.d/uwsgi
+    validate: "logrotate -d %s"
+  tags:
+    - uwsgi
+
+- name: enable uwsgi
+  service:
+    name: uwsgi
+    enabled: true
+  tags:
+    - uwsgi

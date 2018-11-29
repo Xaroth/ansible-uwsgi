@@ -1,0 +1,14 @@
+[uwsgi]
+chdir=/opt/django_app
+module=django.wsgi:application
+master=True
+workers=4
+pidfile={{ uwsgi_pid_directory }}/django.pid
+vacuum=True
+max-requests=5000
+max-worker-lifetime=3600
+daemonize={{ uwsgi_log_directory }}/django.log
+socket=127.0.0.1:8888
+uid={{ application_user|d(www_user) }}
+gid={{ application_group|d(www_user) }}
+chmod-socket = 664
